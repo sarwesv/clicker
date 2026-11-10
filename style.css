@@ -1,0 +1,329 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+:root {
+  --bg-color: #0b0f19;
+  --deck-bg: #151c2c;
+  --deck-border: #1f293d;
+  --key-top: #253147;
+  --key-bottom: #1a2334;
+  --key-bevel: #384766;
+  --key-shadow: #080c14;
+  --key-text: #94a3b8;
+  --accent-color: #38bdf8;
+  --accent-glow: rgba(56, 189, 248, 0.4);
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-color);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #f1f5f9;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+#particleCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  z-index: 2;
+  padding: 2rem;
+  width: 100%;
+  max-width: 720px;
+}
+
+/* Counter display */
+.counter-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  gap: 16px;
+}
+
+.counter-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.counter-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.counter-display {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4.5rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #f8fafc;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 30px rgba(56, 189, 248, 0.25);
+  transition: transform 0.08s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+}
+
+.counter-display.bump {
+  transform: scale(1.1);
+  color: var(--accent-color);
+  text-shadow: 0 0 35px var(--accent-glow);
+}
+
+/* Individual digit sliding slot - clean with no borders, boxes, or lines */
+.digit-slot {
+  position: relative;
+  width: 0.62em;
+  height: 1.15em;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.digit-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1em;
+  font-weight: inherit;
+  color: inherit;
+  font-variant-numeric: inherit;
+  text-shadow: inherit;
+  transition: transform 0.16s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.16s ease;
+  will-change: transform, opacity;
+}
+
+.digit-item.digit-exit {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.digit-item.digit-enter {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.reset-btn {
+  background: rgba(21, 28, 44, 0.6);
+  border: 1px solid var(--deck-border);
+  color: #64748b;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+  margin-left: 4px;
+}
+
+.reset-btn:hover {
+  background: #1f293d;
+  color: #f1f5f9;
+  border-color: #384766;
+  transform: rotate(45deg);
+}
+
+.reset-btn:active {
+  transform: scale(0.92);
+}
+
+/* Keyboard deck / casing */
+.keyboard-deck {
+  width: 100%;
+  padding: 24px;
+  background: linear-gradient(180deg, var(--deck-bg) 0%, #101624 100%);
+  border-radius: 24px;
+  border: 1px solid var(--deck-border);
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.6),
+    0 2px 4px rgba(255, 255, 255, 0.05) inset;
+  position: relative;
+  transition: box-shadow 0.15s ease;
+}
+
+.keyboard-deck.active {
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.7),
+    0 0 40px var(--accent-glow),
+    0 2px 4px rgba(255, 255, 255, 0.08) inset;
+}
+
+.spacebar-case {
+  position: relative;
+  width: 100%;
+  height: 80px;
+  background: #0d121c;
+  border-radius: 16px;
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.8) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+/* 3D Keycap */
+.spacebar-key {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  border-radius: 12px;
+  perspective: 600px;
+  touch-action: manipulation;
+}
+
+.key-surface {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 8px;
+  background: linear-gradient(180deg, var(--key-top) 0%, var(--key-bottom) 100%);
+  border-radius: 12px;
+  border: 1px solid var(--key-bevel);
+  box-shadow: 
+    0 1px 1px rgba(255, 255, 255, 0.15) inset,
+    0 8px 0 var(--key-shadow),
+    0 12px 16px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.06s ease, box-shadow 0.06s ease, background 0.06s ease;
+  will-change: transform, box-shadow;
+}
+
+.key-legend {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  color: var(--key-text);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  transition: color 0.08s ease, text-shadow 0.08s ease;
+}
+
+/* Active / Pressed state */
+.spacebar-key.pressed .key-surface,
+.spacebar-key:active .key-surface {
+  transform: translateY(6px);
+  background: linear-gradient(180deg, #1e283b 0%, #172030 100%);
+  box-shadow: 
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 2px 0 var(--key-shadow),
+    0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.spacebar-key.pressed .key-legend,
+.spacebar-key:active .key-legend {
+  color: var(--accent-color);
+  text-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* Hint text */
+.hint-text {
+  font-size: 0.95rem;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.hint-text kbd {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #334155;
+  box-shadow: 0 2px 0 #0f172a;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Footer controls */
+.controls {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10;
+}
+
+.sound-btn {
+  background: rgba(21, 28, 44, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--deck-border);
+  color: #94a3b8;
+  padding: 8px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.sound-btn:hover {
+  background: #1f293d;
+  color: #f1f5f9;
+  border-color: #384766;
+}
+
+.sound-btn.muted {
+  color: #64748b;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 1.25rem;
+    gap: 2.5rem;
+  }
+  .spacebar-case {
+    height: 70px;
+  }
+}

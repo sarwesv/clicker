@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spacebar Clicker</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⌨️</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="particleCanvas"></canvas>
+
+  <main class="container">
+    <div class="counter-container">
+      <div class="counter-wrapper">
+        <span class="counter-label">CLICKS</span>
+        <div class="counter-display" id="counterDisplay"></div>
+      </div>
+      <button id="resetBtn" class="reset-btn" type="button" title="Reset counter" aria-label="Reset counter">
+        <span class="reset-icon">↺</span>
+      </button>
+    </div>
+
+    <div class="keyboard-deck">
+      <div class="spacebar-case">
+        <button id="spacebar" class="spacebar-key" type="button" aria-label="Spacebar">
+          <span class="key-surface">
+            <span class="key-legend">SPACE</span>
+          </span>
+          <span class="key-shadow"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="hint-text">
+      <span>Press <kbd>Space</kbd> or click the key</span>
+    </div>
+  </main>
+
+  <footer class="controls">
+    <button id="soundToggle" class="sound-btn" type="button" aria-label="Toggle sound">
+      <span id="soundIcon" class="icon">🔊</span>
+      <span class="sound-label">Sound On</span>
+    </button>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
