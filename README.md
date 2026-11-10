@@ -12,7 +12,7 @@ A tactile, mechanical spacebar clicking game built with HTML, CSS, and vanilla J
 
 ## How to Run
 
-Simply open `index.html` in any modern web browser, or serve it locally:
+Simply open https://sarwesv.github.io/clicker in any modern web browser, or serve it locally:
 
 ```bash
 # Python 3
